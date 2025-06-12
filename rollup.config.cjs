@@ -12,7 +12,7 @@ export default {
     context: 'window',
     input: 'src/main.ts',
     output: {
-        file: isProd ? 'dist/main.js' : 'main.js',
+        file: 'main.js',
         format: 'cjs',
         exports: 'default',
         sourcemap: !isProd,

@@ -1,5 +1,10 @@
 # Release Updates
 
+## Version 2.6.1
+
+-   Fixed array mutation errors in file and folder sorting operations
+-   Updated build configuration for correct file output
+
 ## Version 2.6.0
 
 -   Reveal Active File activates the Leaf

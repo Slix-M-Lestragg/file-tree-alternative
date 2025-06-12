@@ -1,11 +1,12 @@
 {
     "name": "file-tree-alternative",
-    "version": "2.6.0",
+    "version": "2.6.1",
     "description": "This plugin allows you to have an alternative file tree view.",
     "main": "main.js",
     "scripts": {
         "dev": "rollup -c -w --bundleConfigAsCjs",
-        "build": "NODE_ENV=production rollup -c --bundleConfigAsCjs"
+        "build": "NODE_ENV=production rollup -c --bundleConfigAsCjs",
+        "version": "node scripts/version.mjs"
     },
     "keywords": [],
     "author": "",
