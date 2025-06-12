@@ -1,9 +1,10 @@
-import { Plugin, addIcon, TAbstractFile, Notice } from 'obsidian';
+import { Plugin, addIcon, TAbstractFile, Notice, Menu } from 'obsidian';
 import { FileTreeView } from './FileTreeView';
 import { ZoomInIcon, ZoomOutIcon, ZoomOutDoubleIcon, LocationIcon, SpaceIcon } from './utils/icons';
 import { FileTreeAlternativePluginSettings, FileTreeAlternativePluginSettingsTab, DEFAULT_SETTINGS } from './settings';
 import { VaultChange, eventTypes } from 'utils/types';
 import { getBookmarkTitle } from 'utils/Utils';
+import { copyToClipboard, getRelativePath, getFullPath } from 'utils/clipboard';
 
 export default class FileTreeAlternativePlugin extends Plugin {
     settings: FileTreeAlternativePluginSettings;
@@ -92,13 +93,18 @@ export default class FileTreeAlternativePlugin extends Plugin {
                 });
                 window.dispatchEvent(event);
             },
-        });
-
-        // Add event listener for vault changes
+        });        // Add event listener for vault changes
         this.app.vault.on('create', this.onCreate);
         this.app.vault.on('delete', this.onDelete);
         this.app.vault.on('modify', this.onModify);
-        this.app.vault.on('rename', this.onRename);
+        this.app.vault.on('rename', this.onRename);        // Hook into default file explorer context menu for both files and folders
+        this.registerEvent(
+            this.app.workspace.on('file-menu', (menu, file) => {
+                if (this.settings.enhanceDefaultFileExplorer) {
+                    this.addCopyPathMenuItems(menu, file);
+                }
+            })
+        );
 
         // Ribbon Icon For Opening
         this.refreshIconRibbon();
@@ -189,8 +195,34 @@ export default class FileTreeAlternativePlugin extends Plugin {
 
     onCreate = (file: TAbstractFile) => this.triggerVaultChangeEvent(file, 'create', '');
     onDelete = (file: TAbstractFile) => this.triggerVaultChangeEvent(file, 'delete', '');
-    onModify = (file: TAbstractFile) => this.triggerVaultChangeEvent(file, 'modify', '');
-    onRename = (file: TAbstractFile, oldPath: string) => this.triggerVaultChangeEvent(file, 'rename', oldPath);
+    onModify = (file: TAbstractFile) => this.triggerVaultChangeEvent(file, 'modify', '');    onRename = (file: TAbstractFile, oldPath: string) => this.triggerVaultChangeEvent(file, 'rename', oldPath);
+
+    addCopyPathMenuItems = (menu: Menu, file: TAbstractFile) => {
+        // Add separator before our items
+        menu.addSeparator();
+
+        // Add "Copy Full Path" menu item
+        menu.addItem((item) => {
+            item
+                .setTitle('Copy Full Path')
+                .setIcon('link')
+                .onClick(() => {
+                    const fullPath = getFullPath(file.path, this.app);
+                    copyToClipboard(fullPath, 'Full path copied to clipboard');
+                });
+        });
+
+        // Add "Copy Relative Path" menu item
+        menu.addItem((item) => {
+            item
+                .setTitle('Copy Relative Path')
+                .setIcon('link')
+                .onClick(() => {
+                    const relativePath = getRelativePath(file.path, this.app);
+                    copyToClipboard(relativePath, 'Relative path copied to clipboard');
+                });
+        });
+    };
 
     refreshIconRibbon = () => {
         this.ribbonIconEl?.remove();

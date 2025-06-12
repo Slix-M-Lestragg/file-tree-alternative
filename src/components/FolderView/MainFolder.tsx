@@ -9,6 +9,7 @@ import { TFolder, Menu } from 'obsidian';
 import { VaultChangeModal } from 'modals';
 import * as Icons from 'utils/icons';
 import { FolderSortType } from 'settings';
+import { copyToClipboard, getRelativePath, getFullPath } from 'utils/clipboard';
 import useForceUpdate from 'hooks/ForceUpdate';
 import { FolderTree } from 'utils/types';
 
@@ -73,6 +74,27 @@ export function MainFolder(props: FolderProps) {
                     .onClick(() => focusOnFolder(folder.parent));
             });
         }
+
+        // Copy Path Options
+        folderMenu.addItem((menuItem) => {
+            menuItem
+                .setTitle('Copy Path')
+                .setIcon('link')
+                .onClick((ev: MouseEvent) => {
+                    const fullPath = getFullPath(folder.path, app);
+                    copyToClipboard(fullPath, `Path copied to clipboard`);
+                });
+        });
+
+        folderMenu.addItem((menuItem) => {
+            menuItem
+                .setTitle('Copy Relative Path')
+                .setIcon('link')
+                .onClick((ev: MouseEvent) => {
+                    const relativePath = getRelativePath(folder.path, app);
+                    copyToClipboard(relativePath, `Relative path copied to clipboard`);
+                });
+        });
 
         // Trigger
         app.workspace.trigger('root-folder-menu', folderMenu, folder);

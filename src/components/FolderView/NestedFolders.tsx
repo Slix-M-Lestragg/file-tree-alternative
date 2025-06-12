@@ -8,6 +8,7 @@ import * as recoilState from 'recoil/pluginState';
 import * as Util from 'utils/Utils';
 import { VaultChangeModal, MoveSuggestionModal, ConfirmationModal } from 'modals';
 import * as newFileUtils from 'utils/newFile';
+import { copyToClipboard, getRelativePath, getFullPath } from 'utils/clipboard';
 
 interface NestedFoldersProps {
     plugin: FileTreeAlternativePlugin;
@@ -154,6 +155,27 @@ export function NestedFolders(props: NestedFoldersProps) {
                 .setIcon('switch')
                 .onClick((ev: MouseEvent) => {
                     setExcludedFolders([...excludedFolders, folder.path]);
+                });
+        });
+        
+        // Copy Path Options
+        folderMenu.addItem((menuItem) => {
+            menuItem
+                .setTitle('Copy Path')
+                .setIcon('link')
+                .onClick((ev: MouseEvent) => {
+                    const fullPath = getFullPath(folder.path, app);
+                    copyToClipboard(fullPath, `Path copied to clipboard`);
+                });
+        });
+
+        folderMenu.addItem((menuItem) => {
+            menuItem
+                .setTitle('Copy Relative Path')
+                .setIcon('link')
+                .onClick((ev: MouseEvent) => {
+                    const relativePath = getRelativePath(folder.path, app);
+                    copyToClipboard(relativePath, `Relative path copied to clipboard`);
                 });
         });
 

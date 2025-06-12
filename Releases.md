@@ -1,5 +1,8 @@
 # Release Updates
 
+## Version 2.7.0
+
+
 ## Version 2.6.1
 
 -   Fixed array mutation errors in file and folder sorting operations

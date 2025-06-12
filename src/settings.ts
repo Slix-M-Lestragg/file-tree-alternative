@@ -38,6 +38,8 @@ export interface FileTreeAlternativePluginSettings {
     deleteFileOption: DeleteFileOption;
     showFileNameAsFullPath: boolean;
     bookmarksEvents: boolean;
+    includeVaultNameInRelativePath: boolean;
+    enhanceDefaultFileExplorer: boolean;
 }
 
 export const DEFAULT_SETTINGS: FileTreeAlternativePluginSettings = {
@@ -69,6 +71,8 @@ export const DEFAULT_SETTINGS: FileTreeAlternativePluginSettings = {
     deleteFileOption: 'trash',
     showFileNameAsFullPath: false,
     bookmarksEvents: false,
+    includeVaultNameInRelativePath: false,
+    enhanceDefaultFileExplorer: true,
 };
 
 export class FileTreeAlternativePluginSettingsTab extends PluginSettingTab {
@@ -336,6 +340,26 @@ export class FileTreeAlternativePluginSettingsTab extends PluginSettingTab {
                     this.plugin.settings.showFileNameAsFullPath = value;
                     this.plugin.saveSettings();
                     this.refreshView();
+                });
+            });
+
+        new Setting(containerEl)
+            .setName('Include vault name in relative paths')
+            .setDesc('Turn on if you want to include the vault name as root in "Copy Relative Path" functionality (e.g., VaultName/folder/file.md instead of folder/file.md)')
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.includeVaultNameInRelativePath).onChange((value) => {
+                    this.plugin.settings.includeVaultNameInRelativePath = value;
+                    this.plugin.saveSettings();
+                });
+            });
+
+        new Setting(containerEl)
+            .setName('Enhance default file explorer')
+            .setDesc('Turn on if you want to add "Copy Full Path" and "Copy Relative Path" options to the default Obsidian file explorer context menu')
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.enhanceDefaultFileExplorer).onChange((value) => {
+                    this.plugin.settings.enhanceDefaultFileExplorer = value;
+                    this.plugin.saveSettings();
                 });
             });
 

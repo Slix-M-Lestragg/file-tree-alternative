@@ -9,6 +9,7 @@ import * as Icons from 'utils/icons';
 import { Menu } from 'obsidian';
 import { isMouseEvent } from 'hooks/useLongPress';
 import { SortType } from 'settings';
+import { copyToClipboard, getRelativePath, getFullPath } from 'utils/clipboard';
 
 // ----> FILE TREE COMPONENT HANDLERS <----- \\
 
@@ -402,6 +403,25 @@ export const triggerContextMenu = (params: {
             if (fileToCopy) {
                 plugin.app.vault.copy(fileToCopy as TFile, `${file.parent.path}/${file.basename} 1.${file.extension}`);
             }
+        });
+    });
+
+    // Copy Path Options
+    fileMenu.addItem((menuItem) => {
+        menuItem.setTitle('Copy Path');
+        menuItem.setIcon('link');
+        menuItem.onClick((ev: MouseEvent) => {
+            const fullPath = getFullPath(file.path, plugin.app);
+            copyToClipboard(fullPath, `Path copied to clipboard`);
+        });
+    });
+
+    fileMenu.addItem((menuItem) => {
+        menuItem.setTitle('Copy Relative Path');
+        menuItem.setIcon('link');
+        menuItem.onClick((ev: MouseEvent) => {
+            const relativePath = getRelativePath(file.path, plugin.app);
+            copyToClipboard(relativePath, `Relative path copied to clipboard`);
         });
     });
 
