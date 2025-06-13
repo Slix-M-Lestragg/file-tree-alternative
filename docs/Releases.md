@@ -2,6 +2,10 @@
 
 ## Version 2.7.0
 
+-   Add 'Copy Full Path' and 'Copy Relative Path' options to files and folders
+-   Add settings for configuring path copying behavior
+-   Enhance default file explorer with path copying options
+-   Implement clipboard utility functions for path management
 
 ## Version 2.6.1
 
